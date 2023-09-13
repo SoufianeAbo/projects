@@ -1,19 +1,17 @@
 #include <stdio.h>
-int main () {
-    // declare variables
+
+int main()
+{
     int a;
-    int b;
+    int b; 
     int c;
     int d;
 
-    // take input
-    printf("Enter 4 integers: ");
-    scanf("%d %d %d %d", &a, &b, &c, &d);
-
-    // calculate sum
+    printf("enter your enteger: ");
+    scanf("%d %d %d %d" , &a , &b , &c , &d);
     int sum = a + b + c + d;
+    printf("\n votre sum is %d: " , sum);
+    printf("\n votre sum is %d: " , sum / 4);
 
-    // print
-    printf("\nThe calculated sum of these numbers is %d", sum);
-    printf("\nThe average of this sum is %d", sum / 4);
+    return 0;
 }

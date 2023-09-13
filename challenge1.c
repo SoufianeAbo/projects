@@ -1,23 +1,22 @@
-#include <stdio.h>
-int main() {
-    // declare variables
-    char myfamName[15];
-    char myName[15];
-    int age;
-    char gender;
-    char phoneNum[15];
+#include stdio.h
+ int main ()
+ {
+    char myLastName[17];
+    char myName[16]; 
+    int Age;
+    char Sex;
+    float NumPhone;
 
-    printf("Your family name: \n");
-    scanf("%s", &myfamName);
-    printf("Your name: \n");
-    scanf("%s", &myName);
-    printf("Your age: \n");
-    scanf("%d", &age);
-    printf("Your gender (either M or F): \n");
-    scanf(" %c", &gender);
-    printf("Your phone number: +");
-    scanf("%s", &phoneNum);
+    printf(Your Last Name );
+    scanf(%s, &myLastName);
+    printf(nYour Name );
+    scanf(%s , &myName);
+    printf(nYour Age );
+    scanf(%d , &Age);
+    printf(nYour sex );
+    scanf(%s , &Sex);
+    printf(nYour phone Num +);
+    scanf(%f, &NumPhone);
 
-    printf("\nYour full name: %s %s\nYour age: %d\nYour gender: %c\nYour phone number: %s", myName, myfamName, age, gender, phoneNum);
     return 0;
-}
+ }
