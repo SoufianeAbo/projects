@@ -7,17 +7,17 @@ int main() {
     char gender;
     char phoneNum[15];
 
-    printf("Your family name: ");
+    printf("Your family name: \n");
     scanf("%s", &myfamName);
-    printf("\nYour name: ");
+    printf("Your name: \n");
     scanf("%s", &myName);
-    printf("\nYour age: ");
+    printf("Your age: \n");
     scanf("%d", &age);
-    printf("\nYour gender (either M or F): ");
+    printf("Your gender (either M or F): \n");
     scanf(" %c", &gender);
-    printf("\nYour phone number: +");
+    printf("Your phone number: +");
     scanf("%s", &phoneNum);
 
-    printf("%s, %s, %d, %c, %s", myfamName, myName, age, gender, phoneNum);
+    printf("\nYour full name: %s %s\nYour age: %d\nYour gender: %c\nYour phone number: %s", myName, myfamName, age, gender, phoneNum);
     return 0;
 }
