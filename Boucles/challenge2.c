@@ -19,7 +19,7 @@ int main () {
         while (j < (2 * i - 1)) {
             printf("*");
             j++;
-        }
+        }   
 
         printf("\n");
         i++;
