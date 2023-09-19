@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 int mainMenu();
 int PrintStudent(int a);
@@ -31,7 +32,7 @@ void Create()
     printf("Input date of birth (dd/mm/yyyy): \n");
     scanf("%d/%d/%d", &student[num].day, &student[num].month, &student[num].year);
 
-    if (student[num].year > 9999 || student[num].year <= 0) {
+    if (student[num].year > currentYear || student[num].year <= 0) {
         printf("Invalid year, try again.\n");
         Create();
     } else if (student[num].month > 12 || student[num].month <= 0) {
