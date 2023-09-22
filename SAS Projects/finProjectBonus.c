@@ -43,19 +43,6 @@ struct todo
 
 } list[MAX];
 
-// // function to check whether you're currently in editing or adding
-// void Check(int a)
-// {
-//     if (isAdd == 0)
-//     {
-//         Edit(a);
-//     }
-//     else
-//     {
-//         Add(a);
-//     }
-// }
-
 // calculate deadline function
 int CalculateDeadline(int a)
 {
