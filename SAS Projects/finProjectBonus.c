@@ -2,26 +2,25 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <time.h>
 
 #define MAX 100
 #define TITLE 30
 
 // initialize variables
-int num = 0, currentYear, currentMonth, currentDay, isAdd = 0;
+int num = 0, currentYear = 2023, currentMonth = 9, currentDay = 23, isAdd = 0, delete = 0;
 double DMY = 0;
 
 // prototypes
 char *Status(int a);
 int Add(int a);
-void Display(int a);
+int Display(int a);
 void BubbleSortID();
 void BubbleSortAlp();
 void BubbleSortDMY();
 void mainMenu();
-void CalculateDeadline(int a);
-void Delete(int a);
-void Edit(int a);
+int CalculateDeadline(int a);
+int Delete(int a);
+int Edit(int a);
 
 // to do list structure
 struct todo
@@ -36,30 +35,35 @@ struct todo
         double dmy;
     } date;
 
+    struct deadline2
+    {
+        int day, month, year;
+        double dmy;
+    } creationDate;
+
 } list[MAX];
 
-// function to check whether you're currently in editing or adding
-void Check(int a)
-{
-    if (isAdd == 0)
-    {
-        Edit(a);
-    }
-    else
-    {
-        Add(a);
-    }
-}
+// // function to check whether you're currently in editing or adding
+// void Check(int a)
+// {
+//     if (isAdd == 0)
+//     {
+//         Edit(a);
+//     }
+//     else
+//     {
+//         Add(a);
+//     }
+// }
 
 // calculate deadline function
-void CalculateDeadline(int a)
+int CalculateDeadline(int a)
 {
     // if the current year is above current year or below or equals to zero, don't execute
     if (list[a].date.year < currentYear || list[a].date.year <= 0)
     {
         printf("Invalid year, try again.\n\n");
         // check
-        Check(a);
         return 0;
         // check if month is above 12 or equals zero or below it
     }
@@ -67,7 +71,6 @@ void CalculateDeadline(int a)
     {
         printf("Invalid month, try again.\n\n");
         // check
-        Check(a);
         return 0;
         // check if day is below or equals zero
     }
@@ -75,7 +78,6 @@ void CalculateDeadline(int a)
     {
         printf("Invalid day, try again.\n\n");
         // check
-        Check(a);
         return 0;
     }
     else
@@ -142,12 +144,19 @@ void CalculateDeadline(int a)
     list[a].date.dmy += list[a].date.month * 30;
     list[a].date.dmy += list[a].date.day;
 
+    list[a].creationDate.year = currentYear;
+    list[a].creationDate.month = currentMonth;
+    list[a].creationDate.day = currentDay;
+
+    list[a].creationDate.dmy = DMY;
+
     // check deadline being lower than current date
     if (DMY > list[a].date.dmy)
     {
         printf("Deadline is lower than current date. Try again.\n");
-        Check(a);
         return 0;
+    } else {
+        return 1;
     }
 }
 
@@ -166,7 +175,7 @@ int Add(int a)
             mainMenu();
         case 1:
             // otherwise, keep looping
-            return;
+            return 0;
         }
     } else {
         // variable to make sure that we're in add mode
@@ -195,12 +204,13 @@ int Add(int a)
             return 0;
         }
 
-        // input deadline
-        printf("Input a deadline (dd/mm/yyyy):\n");
-        scanf("%d/%d/%d", &list[num].date.day, &list[num].date.month, &list[num].date.year);
-
         // call function to check if our deadline is correct
-        CalculateDeadline(num);
+        do
+        {
+            // input deadline
+            printf("Input a deadline (dd/mm/yyyy):\n");
+            scanf("%d/%d/%d", &list[num].date.day, &list[num].date.month, &list[num].date.year);
+        } while (CalculateDeadline(num) == 0);
 
         // created successfully
         printf("Task %s has been created successfully with an ID of ID%03d.\n\n", list[num].title, list[num].id);
@@ -218,7 +228,7 @@ int Add(int a)
             mainMenu();
         case 1:
             // otherwise, keep looping
-            return;
+            return 0;
         }
     }
 }
@@ -240,7 +250,7 @@ char *Status(int a)
 }
 
 // print the task function so i don't have to keep typing it manually
-void PrintTask(int a)
+void PrintTask(int a, int b)
 {
     printf("\n-------------------------------- TASK %03d Information --------------------------------\n", list[a].id);
     printf("| Task ID: %03d |\n", list[a].id);
@@ -249,17 +259,15 @@ void PrintTask(int a)
     printf("| Description: %s \n", list[a].description);
     printf("| Deadline: %02d/%02d/%04d \n", list[a].date.day, list[a].date.month, list[a].date.year);
     printf("| Status: %s \n", Status(list[a].status));
+    printf("| Creation Date: %02d/%02d/%04d \n", list[a].creationDate.day, list[a].creationDate.month, list[a].creationDate.year);
+    if (b == 1) {
+        printf("| Days Remaining: %.0lf\n", list[a].date.dmy - DMY);
+    }
     printf("------------------------------------------------------------------------------------\n");
 }
 
-void lowercase(char *str) {
-    for (int i = 0; str[i]; i++) {
-        str[i] = tolower(str[i]);
-    }
-}
-
 // display function
-void Display(int a)
+int Display(int a)
 {
     // found starts at 0 in case we return back
     int found = 0;
@@ -278,7 +286,7 @@ void Display(int a)
         {
             for (int i = 0; i < num; i++)
             {
-                PrintTask(i);
+                PrintTask(i, 0);
             }
         }
         else
@@ -289,7 +297,7 @@ void Display(int a)
                 if ((list[i].date.dmy - DMY) <= 3)
                 {
                     found = 1;
-                    PrintTask(i);
+                    PrintTask(i, 1);
                 }
             }
 
@@ -381,7 +389,7 @@ void BubbleSortDMY()
 }
 
 // delete function
-void Delete(int a)
+int Delete(int a)
 {
     // initialize our variables
     int sel, found = 0;
@@ -396,7 +404,7 @@ void Delete(int a)
             found = 1;
 
             // print our task, argument a which is the input user put in delete function
-            PrintTask(a);
+            PrintTask(a, 0);
 
             // confirmation input
             printf("\n------------------- Task Deletion Confirmation -------------------\n");
@@ -425,19 +433,24 @@ void Delete(int a)
                 // decrease number of array by 1
                 num--;
 
+                // update list of ids
+                for (int j = 0; j < num; j++) {
+                    list[j].id = j;
+                }
+
                 // deleted
                 printf("ID%03d %s has been deleted.\n", list[a].id, list[a].title);
                 mainMenu();
-                return;
+                return 0;
             // no
             case 2:
                 mainMenu();
-                return;
+                return 0;
             // anything that isnt 1 or 2
             default:
                 printf("Invalid option, try again.\n");
                 mainMenu();
-                return;
+                return 0;
             }
         }
     }
@@ -452,7 +465,7 @@ void Delete(int a)
 }
 
 // edit function
-void Edit(int a)
+int Edit(int a)
 {
     int sel, found = 0;
 
@@ -466,7 +479,7 @@ void Edit(int a)
             found = 1;
 
             // print our task
-            PrintTask(a);
+            PrintTask(a, 0);
 
             // menu of selection
             printf("\n------------------- Task Modification Menu -------------------\n");
@@ -486,8 +499,8 @@ void Edit(int a)
             // modify description
             case 1:
                 printf("Input a new description: \n");
-                scanf("%[^\n]", list[a].description);
-                PrintTask(a);
+                scanf(" %[^\n]", list[a].description);
+                PrintTask(a, 0);
                 mainMenu();
                 break;
             // modify status
@@ -504,15 +517,18 @@ void Edit(int a)
                 }
                 else
                 {
-                    PrintTask(a);
+                    PrintTask(a, 0);
                     mainMenu();
                 }
                 break;
             case 3:
                 // edit deadline
-                printf("Input a new deadline (dd/mm/yyyy):\n");
-                scanf("%d/%d/%d", &list[a].date.day, &list[a].date.month, &list[a].date.year);
-                CalculateDeadline(a);
+                do
+                {
+                    // input deadline
+                    printf("Input a deadline (dd/mm/yyyy):\n");
+                    scanf("%d/%d/%d", &list[a].date.day, &list[a].date.month, &list[a].date.year);
+                } while (CalculateDeadline(a) == 0);
                 break;
             case 4:
                 mainMenu();
@@ -562,11 +578,14 @@ int CalculateTasks(int a)
     case 1:
         // if switch(1), print all complete tasks
         return complete;
+        break;
     case 2:
         // if switch(2), print all incomplete tasks
         return incomplete;
+        break;
     default:
         return 0;
+        break;
     }
 }
 
@@ -575,6 +594,9 @@ void mainMenu()
 {
     // selection variable
     int sel;
+
+    // make everything sorted to ID to make sure we don't fall into errors
+    BubbleSortID();
 
     // print our menu
     printf("\n------------------------- Task Management Menu -------------------------\n");
@@ -683,6 +705,7 @@ void mainMenu()
             }
             break;
         }
+        break;
     // display everything that has 3 days deadline
     case 5:
         Display(1);
@@ -716,6 +739,7 @@ void mainMenu()
             // delete the id they asked for
             Delete(sel4);
         }
+        break;
     // search
     case 8:
         int sel5, found = 0;
@@ -748,7 +772,7 @@ void mainMenu()
                 {
                     // if found, print sel6
                     found = 1;
-                    PrintTask(sel6);
+                    PrintTask(sel6, 0);
                 }
             }
 
@@ -761,11 +785,11 @@ void mainMenu()
             break;
         // by title
         case 2:
-            int sel7;
+            char sel7[TITLE];
 
             // ask for user input
             printf("Input title for search: \n");
-            scanf("%s", sel7);
+            scanf(" %[^\n]", sel7);
 
             // loop through entire array
             for (int i = 0; i < num; i++)
@@ -775,14 +799,14 @@ void mainMenu()
                 {
                     // found, print
                     found = 1;
-                    PrintTask(sel7);
+                    PrintTask(i, 0);
                 }
             }
 
             // if still not found, then no task like this exist
             if (found == 0)
             {
-                printf("No task with ID %03d found.", list[sel6].id);
+                printf("No task with title %s found.", sel7);
             }
 
             break;
@@ -794,6 +818,8 @@ void mainMenu()
             printf("Invalid option, try again.");
             break;
         }
+        mainMenu();
+        break;
     // statistics
     case 9:
         int sel8;
@@ -829,7 +855,7 @@ void mainMenu()
             for (int i = 0; i < num; i++)
             {
                 // print days remaining by subtracting it
-                printf("TASK ID%03d:\nTitle: %s\nDescription: %s\nDays remaining: %.0lf\n\n", list[i].id, list[i].title, list[i].description, list[i].date.dmy - DMY);
+                PrintTask(i, 1);
             }
             break;
         default:
@@ -855,23 +881,10 @@ void mainMenu()
 
 int main()
 {
-    time_t current_time;
-    struct tm *time_info;
-
-    time(&current_time);
-    time_info = localtime(&current_time);
-
     // calculate our DMY by taking our currentyear, currentmonth, and currentday
-    currentYear = time_info->tm_year + 1900;
-    currentMonth = time_info->tm_mon + 1;
-    currentDay = time_info->tm_mday;
-
     DMY += currentYear * 365;
     DMY += currentMonth * 30;
     DMY += currentDay;
-
-    time(&current_time);
-    time_info = localtime(&current_time);
 
     // mainmenu
     mainMenu();
